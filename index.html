@@ -1451,10 +1451,10 @@ document.getElementById('waitlist-form').addEventListener('submit', async e => {
       fd.append('dob',         dob);
       fd.append('receipt',     receiptFile, receiptFile.name);
 
-      res = await fetch('/register', { method: 'POST', body: fd });
+      res = await fetch('/.netlify/functions/api/register', { method: 'POST', body: fd });
     } else {
       // Simple email-only waitlist → /subscribe
-      res = await fetch('/subscribe', {
+      res = await fetch('/.netlify/functions/api/subscribe', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ email, name, phone, university, nationalId, dob }),
@@ -1475,13 +1475,15 @@ document.getElementById('waitlist-form').addEventListener('submit', async e => {
       if (fileLabelText) { fileLabelText.textContent = 'Click to upload transfer screenshot'; fileLabelText.style.color = '#d1d5db'; }
       if (fileLabel)     { fileLabel.style.borderColor = 'rgba(0,240,255,0.25)'; fileLabel.style.boxShadow = 'none'; }
     } else {
-      throw new Error(data.message || 'server error');
+      throw new Error(data.message || 'Server error.');
     }
   } catch (err) {
     btn.innerHTML     = '🚀 Confirm Registration &amp; Reserve My Seat';
     btn.disabled      = false;
     btn.style.opacity = '1';
-    showError('Something went wrong. Please try again or contact us directly.');
+    
+    // Show the actual error message for debugging
+    showError('Error: ' + err.message);
   }
 });
 
