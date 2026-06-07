@@ -266,13 +266,15 @@ app.get('*', (req, res) => {
 });
 
 // ── Start server ──────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log('');
-  console.log('  ╔══════════════════════════════════════════╗');
-  console.log(`  ║  🚀 LevelUp AI server ready              ║`);
-  console.log(`  ║  → http://localhost:${PORT}                 ║`);
-  console.log('  ╚══════════════════════════════════════════╝');
-  console.log('');
+// ── Start server (Vercel Fix) ─────────────────────────────────
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 LevelUp AI server ready on port ${PORT}`);
+  });
+}
+
+// السطر ده هو اللي Vercel بتدور عليه عشان تشغل الباك إند
+module.exports = app;
 
   if (!process.env.GMAIL_APP_PASSWORD || process.env.GMAIL_APP_PASSWORD === 'your_16_char_app_password_here') {
     console.warn('  ⚠️  WARNING: Gmail not configured.');
