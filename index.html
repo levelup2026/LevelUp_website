@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LevelUp AI — Master AI. Level Up.</title>
+  <meta name="description" content="LevelUp AI is the AI academy built for university students. Go from zero to AI engineer with structured, project-driven courses. Join 2,400+ students on the waitlist." />
+  <meta property="og:title" content="LevelUp AI — Master AI. Level Up." />
+  <meta property="og:description" content="From zero to AI engineer — structured, fast, and built for your generation." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --cyan: #00f0ff;
+      --violet: #9b5de5;
+      --muted: #6b7280;
+      --card: rgba(255,255,255,0.04);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Restore cursor & hide custom cursor on touch devices ── */
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      #cursor-dot, #cursor-ring { display: none !important; }
+      .btn-outline, .btn-solid, .btn-ghost, .nav-link { cursor: pointer; }
+    }
+
+    /* ── Scrollbar ─────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #080810; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #00f0ff, #9b5de5); border-radius: 9px; }
+
+    /* ── Scroll Progress Bar ───────────── */
+    #scroll-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #00f0ff, #9b5de5);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px #00f0ffaa;
+    }
+
+    /* ── Custom cursor ─────────────────── */
+    #cursor-dot {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: #00f0ff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s ease, opacity 0.2s;
+      box-shadow: 0 0 10px #00f0ff;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(0,240,255,0.35);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9997;
+      transform: translate(-50%,-50%);
+      transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+    }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring {
+      width: 52px; height: 52px;
+      border-color: rgba(155,93,229,0.6);
+    }
+
+    /* ── Noise texture overlay ─────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── Hero grid ─────────────────────── */
+    .hero-grid {
+      background-image:
+        linear-gradient(rgba(0,240,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.06) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+
+    /* ── Gradient text ─────────────────── */
+    .grad {
+      background: linear-gradient(135deg, #00f0ff 0%, #9b5de5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .grad-rev {
+      background: linear-gradient(135deg, #9b5de5 0%, #00f0ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Bracket headings ──────────────── */
+    .bracket::before { content: '[ '; color: var(--cyan); font-weight: 400; }
+    .bracket::after  { content: ' ]'; color: var(--violet); font-weight: 400; }
+
+    /* ── Navbar ────────────────────────── */
+    #navbar {
+      background: rgba(8,8,16,0.8);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #navbar.scrolled {
+      border-bottom-color: rgba(0,240,255,0.1);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+    .nav-link {
+      position: relative;
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.25s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1.5px;
+      background: linear-gradient(90deg,#00f0ff,#9b5de5);
+      transition: width 0.28s ease;
+      border-radius: 2px;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ── Buttons ───────────────────────── */
+    .btn-outline {
+      border: 1.5px solid var(--cyan);
+      color: var(--cyan);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.625rem;
+      cursor: none;
+      transition: box-shadow 0.25s, transform 0.2s;
+      box-shadow: 0 0 10px rgba(0,240,255,0.2), inset 0 0 10px rgba(0,240,255,0.04);
+    }
+    .btn-outline:hover {
+      box-shadow: 0 0 24px rgba(0,240,255,0.5), inset 0 0 16px rgba(0,240,255,0.1);
+      transform: translateY(-1px);
+    }
+    .btn-solid {
+      background: linear-gradient(135deg, #00f0ff 0%, #9b5de5 100%);
+      color: #080810;
+      font-weight: 700;
+      border-radius: 0.75rem;
+      cursor: none;
+      transition: box-shadow 0.25s, transform 0.2s, filter 0.2s;
+    }
+    .btn-solid:hover {
+      box-shadow: 0 0 32px rgba(0,240,255,0.5), 0 0 80px rgba(155,93,229,0.25);
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+    .btn-ghost {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      transition: color 0.2s;
+      cursor: none;
+    }
+    .btn-ghost:hover { color: #fff; }
+    .btn-ghost .arrow { transition: transform 0.2s; }
+    .btn-ghost:hover .arrow { transform: translateX(4px); }
+
+    /* ── Glass card ────────────────────── */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .glass:hover {
+      border-color: rgba(0,240,255,0.2);
+      box-shadow: 0 12px 48px rgba(0,240,255,0.07);
+      transform: translateY(-3px);
+    }
+
+    /* ── Canvas ────────────────────────── */
+    #particles-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* ── Mobile menu ───────────────────── */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+
+    /* ── Reveal animation ──────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.up { opacity: 1; transform: translateY(0); }
+
+    /* ── Stage cards ───────────────────── */
+    .stage {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .stage.up { opacity: 1; transform: translateY(0); }
+
+    /* ── Timeline line ─────────────────── */
+    #tl-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 0;
+      background: linear-gradient(180deg, #00f0ff, #9b5de5, #00f0ff);
+      box-shadow: 0 0 10px rgba(0,240,255,0.5);
+      transition: height 1.6s cubic-bezier(0.4,0,0.2,1);
+      border-radius: 2px;
+    }
+    .tl-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 10px rgba(0,240,255,0.7);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Testimonial stars ─────────────── */
+    .stars { color: #fbbf24; letter-spacing: 2px; font-size: 0.75rem; }
+
+    /* ── Email input ───────────────────── */
+    .email-input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      outline: none;
+      font-size: 0.9rem;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .email-input::placeholder { color: #4b5563; }
+    .email-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 20px rgba(0,240,255,0.15);
+    }
+
+    /* ── Social icons ──────────────────── */
+    .soc {
+      color: #4b5563;
+      transition: color 0.25s, transform 0.25s;
+    }
+    .soc:hover { color: var(--cyan); transform: translateY(-2px); }
+
+    /* ── Logo image ─────────────────────── */
+    .logo-img-nav  { height: 38px; width: auto; display: block; object-fit: contain; flex-shrink: 0; }
+    .logo-img-foot { height: 30px; width: auto; display: block; object-fit: contain; flex-shrink: 0; }
+
+    /* ── Top accent lines ──────────────── */
+    .top-line {
+      position: absolute;
+      inset-x: 0;
+      top: 0;
+      height: 1px;
+    }
+
+    /* ── Glow blob ─────────────────────── */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+
+    /* ── Feature icon box ──────────────── */
+    .icon-box {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+    .glass:hover .icon-box { transform: scale(1.1) rotate(3deg); }
+
+    /* ── Animated underline on hero H1 ── */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg, #00f0ff 0%, #9b5de5 25%, #00f0ff 50%, #9b5de5 75%, #00f0ff 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+    /* ── Pulse ring on waitlist ────────── */
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 0.4; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    .pulse-ring {
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 1px solid var(--cyan);
+      animation: pulseRing 2s ease-out infinite;
+    }
+
+    /* ── Floating badge ────────────────── */
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .floating { animation: float 5s ease-in-out infinite; }
+
+    /* ── Stat count ────────────────────── */
+    .stat-num { font-variant-numeric: tabular-nums; }
+
+    /* ══════════════════════════════════════
+       MOBILE RESPONSIVE
+    ══════════════════════════════════════ */
+
+    /* ── Mobile timeline: left-side vertical line ── */
+    @media (max-width: 767px) {
+      /* Wrapper becomes left-offset so the line sits on the left */
+      #tl-wrap { padding-left: 28px; }
+
+      /* Ghost static background rail */
+      #tl-bg-rail {
+        position: absolute;
+        left: 7px; top: 0; bottom: 0;
+        width: 2px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 2px;
+      }
+
+      /* Animated glow line: left-aligned */
+      #tl-line {
+        position: absolute;
+        left: 7px !important;
+        top: 0;
+        transform: none !important;
+        width: 2px;
+        height: 0;
+        background: linear-gradient(180deg, #00f0ff, #9b5de5, #00f0ff);
+        box-shadow: 0 0 10px rgba(0,240,255,0.5);
+        transition: height 1.6s cubic-bezier(0.4,0,0.2,1);
+        border-radius: 2px;
+        display: block !important;
+      }
+
+      /* Each stage: row with dot on left, card on right */
+      .stage {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 16px !important;
+      }
+
+      /* Show dots on mobile, left-aligned */
+      .tl-dot {
+        display: flex !important;
+        flex-shrink: 0;
+        margin-top: 20px;
+        /* Pull the dot to sit on the line (line is at left:7px, dot is 14px wide → -7px) */
+        margin-left: -21px;
+      }
+
+      /* Card fills remaining width */
+      .stage-card-wrap {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* Hide desktop-only spacer halves */
+      .stage-spacer { display: none !important; }
+    }
+
+    /* ── General mobile polish ────────────── */
+    @media (max-width: 640px) {
+      /* Sections: tighter vertical padding */
+      section { padding-top: 4rem; padding-bottom: 4rem; }
+
+      /* Headings: scale down slightly */
+      h2.bracket { font-size: 1.75rem !important; }
+
+      /* Hero badge: smaller text, no overflow */
+      #hero-badge { font-size: 0.68rem; padding: 0.4rem 0.85rem; text-align: center; }
+
+      /* Stats: tighter gap, 2 cols */
+      #stats-row { gap: 1.5rem 2rem; }
+
+      /* Registration form: single-column on small screens */
+      #waitlist-form .grid { grid-template-columns: 1fr !important; }
+      #notify-btn { width: 100%; justify-content: center; }
+
+      /* Buttons: full width on smallest screens */
+      .btn-solid, .btn-outline { min-height: 48px; display: flex; align-items: center; justify-content: center; }
+
+      /* Cards: slightly less padding */
+      .glass.p-8 { padding: 1.5rem !important; }
+      .glass.p-7 { padding: 1.25rem !important; }
+
+      /* Prevent overflow from blobs */
+      .blob { max-width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- Scroll progress bar -->
+<div id="scroll-bar"></div>
+
+<!-- ══════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-2 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex items-center justify-between h-14 px-5 rounded-2xl"
+         style="background:rgba(8,8,16,0.85);border:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(24px);">
+
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-2.5 select-none group">
+        <img src="levelup_ai_logo_clean.png" alt="LevelUp AI logo" class="logo-img-nav" draggable="false" />
+        <span class="grad font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;">LevelUp AI</span>
+      </a>
+
+      <!-- Desktop links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#roadmap" class="nav-link">Roadmap</a>
+        <a href="#courses" class="nav-link">Courses</a>
+        <a href="#about" class="nav-link">About</a>
+      </div>
+
+      <!-- CTA + hamburger -->
+      <div class="flex items-center gap-3">
+        <a href="#waitlist" class="btn-outline hidden md:inline-flex">Join Waitlist</a>
+        <button id="hamburger" class="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-lg border border-white/10" aria-label="Menu">
+          <span class="block w-5 h-0.5 bg-white/70 transition-all duration-300 origin-center"></span>
+          <span class="block w-5 h-0.5 bg-white/70 transition-all duration-300"></span>
+          <span class="block w-5 h-0.5 bg-white/70 transition-all duration-300 origin-center"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="md:hidden flex-col mt-2 rounded-2xl overflow-hidden"
+         style="background:rgba(8,8,16,0.95);border:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(24px);">
+      <a href="#roadmap" class="block px-6 py-3.5 text-sm text-[#6b7280] hover:text-white hover:bg-white/5 transition-colors">Roadmap</a>
+      <a href="#courses" class="block px-6 py-3.5 text-sm text-[#6b7280] hover:text-white hover:bg-white/5 transition-colors">Courses</a>
+      <a href="#about" class="block px-6 py-3.5 text-sm text-[#6b7280] hover:text-white hover:bg-white/5 transition-colors">About</a>
+      <div class="px-6 py-4 border-t border-white/5">
+        <a href="#waitlist" class="btn-outline block text-center">Join Waitlist</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+
+  <!-- Grid -->
+  <div class="hero-grid absolute inset-0 pointer-events-none opacity-70"></div>
+
+  <!-- Blobs -->
+  <div class="blob w-[700px] h-[700px]" style="background:rgba(0,240,255,0.07);top:-10%;left:-10%;"></div>
+  <div class="blob w-[500px] h-[500px]" style="background:rgba(155,93,229,0.08);bottom:-10%;right:-5%;"></div>
+  <div class="blob w-[300px] h-[300px]" style="background:rgba(0,240,255,0.05);top:30%;left:60%;"></div>
+
+  <!-- Canvas particles -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Vignette -->
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 80% 70% at 50% 40%,transparent 40%,rgba(8,8,16,0.7) 100%);"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+
+    <!-- Badge -->
+    <div id="hero-badge" class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/10 bg-white/[0.03] text-xs font-medium mb-8 floating" style="color:#9ca3af;">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#00f0ff]"></span>
+      </span>
+      Early access open · 2,400+ students on the waitlist
+    </div>
+
+    <!-- H1 -->
+    <h1 class="font-bold leading-[1.05] mb-6 tracking-tight" style="font-family:'Space Grotesk',sans-serif; font-size:clamp(3.2rem,9vw,7rem);">
+      <span class="shimmer-text">Master AI.</span><br />
+      <span style="color:#fff;">Level Up.</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p style="color:#6b7280;font-size:clamp(1rem,2.2vw,1.25rem);max-width:580px;margin:0 auto 2.5rem;line-height:1.7;">
+      From zero to AI engineer — structured, fast, and built for your generation.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+      <a href="#waitlist" class="btn-solid px-8 py-3.5 text-base" style="font-size:1rem;">
+        🚀 Get Early Access
+      </a>
+      <a href="#roadmap" class="btn-ghost">
+        View Roadmap <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats-row" class="flex flex-wrap justify-center gap-10 pt-10 border-t" style="border-color:rgba(255,255,255,0.06);">
+      <div class="text-center">
+        <div class="stat-num grad text-3xl font-bold mb-1" style="font-family:'Space Grotesk',sans-serif;" data-target="8">0</div>
+        <div style="color:#4b5563;font-size:0.75rem;letter-spacing:.05em;">LEARNING STAGES</div>
+      </div>
+      <div class="text-center">
+        <div class="stat-num grad text-3xl font-bold mb-1" style="font-family:'Space Grotesk',sans-serif;" data-target="60" data-suffix="+">0</div>
+        <div style="color:#4b5563;font-size:0.75rem;letter-spacing:.05em;">HOURS OF CONTENT</div>
+      </div>
+      <div class="text-center">
+        <div class="stat-num grad text-3xl font-bold mb-1" style="font-family:'Space Grotesk',sans-serif;" data-target="2400" data-suffix="+">0</div>
+        <div style="color:#4b5563;font-size:0.75rem;letter-spacing:.05em;">STUDENTS WAITING</div>
+      </div>
+      <div class="text-center">
+        <div class="stat-num grad text-3xl font-bold mb-1" style="font-family:'Space Grotesk',sans-serif;" data-target="15" data-suffix="+">0</div>
+        <div style="color:#4b5563;font-size:0.75rem;letter-spacing:.05em;">PROJECTS SHIPPED</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce" style="color:#374151;font-size:0.7rem;letter-spacing:.1em;">
+    <span>SCROLL</span>
+    <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
+      <rect x="1" y="1" width="12" height="18" rx="6" stroke="currentColor" stroke-width="1.5"/>
+      <rect x="6" y="4" width="2" height="4" rx="1" fill="currentColor">
+        <animate attributeName="y" values="4;8;4" dur="1.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0.2;1" dur="1.6s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     ROADMAP
+══════════════════════════════════════ -->
+<section id="roadmap" class="py-28 px-6 relative overflow-hidden">
+  <div class="blob w-80 h-80" style="background:rgba(0,240,255,0.05);top:20%;left:-10%;"></div>
+  <div class="blob w-80 h-80" style="background:rgba(155,93,229,0.05);bottom:10%;right:-10%;"></div>
+
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-20 reveal">
+      <p style="color:var(--cyan);font-size:0.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;">Structured Curriculum</p>
+      <h2 class="font-bold text-4xl bracket" style="font-family:'Space Grotesk',sans-serif;">Your Path to AI Mastery</h2>
+      <p style="color:#6b7280;margin-top:1rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">
+        A battle-tested curriculum that takes you from complete beginner to production-ready AI engineer.
+      </p>
+    </div>
+
+    <!-- Timeline -->
+    <div id="tl-wrap" class="relative">
+      <!-- Desktop background rail (centered) -->
+      <div class="absolute left-1/2 top-0 bottom-0 w-px hidden md:block" style="background:rgba(255,255,255,0.05);transform:translateX(-50%);"></div>
+      <!-- Mobile background rail (left) -->
+      <div id="tl-bg-rail" class="md:hidden"></div>
+      <!-- Animated glow line -->
+      <div id="tl-line"></div>
+
+      <div class="flex flex-col gap-14">
+
+        <!-- Stage 1: Intro to AI — LEFT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-card-wrap md:w-1/2 md:pr-14 md:order-1">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.4),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(0,240,255,0.08);border:1px solid rgba(0,240,255,0.15);">
+                <span style="font-size:1.5rem;">🌐</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Intro to AI</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Your launchpad into the world of artificial intelligence.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:var(--cyan);font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> What is AI, ML, and Deep Learning?</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:var(--cyan);font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> The AI landscape &amp; career paths in 2025</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:var(--cyan);font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Mindset shift: from learner to builder</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:var(--cyan);font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block;"></span>
+                Stage 1 &middot; 3 hours
+              </div>
+            </div>
+          </div>
+          <div class="tl-dot md:order-2"></div>
+          <div class="stage-spacer md:w-1/2 md:pl-14 md:order-3"></div>
+        </div>
+
+        <!-- Stage 2: Python & Data Preprocessing — RIGHT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-spacer md:w-1/2 md:pr-14 md:order-1"></div>
+          <div class="tl-dot md:order-2" style="border-color:#7b8fff;box-shadow:0 0 10px rgba(123,143,255,0.6);"></div>
+          <div class="stage-card-wrap md:w-1/2 md:pl-14 md:order-3">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(123,143,255,0.4),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(123,143,255,0.08);border:1px solid rgba(123,143,255,0.15);">
+                <span style="font-size:1.5rem;">🐍</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Python & Data Preprocessing</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Write clean code and wrangle real-world data like a pro.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#7b8fff;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Python fundamentals &mdash; syntax, loops, functions &amp; OOP</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#7b8fff;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Data wrangling with Pandas &amp; NumPy</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#7b8fff;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Hands-on preprocessing project</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:#7b8fff;font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#7b8fff;display:inline-block;"></span>
+                Stage 2 &middot; 9 hours
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3: Machine Learning & Deployment — LEFT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-card-wrap md:w-1/2 md:pr-14 md:order-1">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(155,93,229,0.5),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(155,93,229,0.08);border:1px solid rgba(155,93,229,0.15);">
+                <span style="font-size:1.5rem;">🤖</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Machine Learning & Deployment</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Train models, ship products &mdash; not just notebooks.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#9b5de5;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Linear &amp; Logistic Regression from scratch</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#9b5de5;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Advanced algorithms: Decision Trees, SVM, XGBoost</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#9b5de5;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Deploy live apps with Streamlit / Gradio</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:#9b5de5;font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#9b5de5;display:inline-block;"></span>
+                Stage 3 &middot; 12 hours
+              </div>
+            </div>
+          </div>
+          <div class="tl-dot md:order-2" style="border-color:#9b5de5;box-shadow:0 0 10px rgba(155,93,229,0.6);"></div>
+          <div class="stage-spacer md:w-1/2 md:pl-14 md:order-3"></div>
+        </div>
+
+        <!-- Stage 4: Deep Learning Foundations — RIGHT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-spacer md:w-1/2 md:pr-14 md:order-1"></div>
+          <div class="tl-dot md:order-2" style="border-color:#e040fb;box-shadow:0 0 10px rgba(224,64,251,0.6);"></div>
+          <div class="stage-card-wrap md:w-1/2 md:pl-14 md:order-3">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(224,64,251,0.4),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(224,64,251,0.08);border:1px solid rgba(224,64,251,0.15);">
+                <span style="font-size:1.5rem;">🧠</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Deep Learning Foundations</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Understand how neural networks actually think and learn.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#e040fb;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Neurons, layers, activation functions &amp; backprop</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#e040fb;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> CNNs for image classification</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#e040fb;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Full deep learning project end-to-end</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:#e040fb;font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#e040fb;display:inline-block;"></span>
+                Stage 4 &middot; 6 hours
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 5: Applied NLP — LEFT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-card-wrap md:w-1/2 md:pr-14 md:order-1">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(249,115,22,0.45),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.18);">
+                <span style="font-size:1.5rem;">💬</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Applied NLP</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Teach machines to read, understand, and generate language.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#f97316;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Text preprocessing, tokenization &amp; embeddings</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#f97316;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> RNN, LSTM &amp; GRU sequence architectures</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#f97316;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> End-to-end NLP project</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:#f97316;font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#f97316;display:inline-block;"></span>
+                Stage 5 &middot; 12 hours
+              </div>
+            </div>
+          </div>
+          <div class="tl-dot md:order-2" style="border-color:#f97316;box-shadow:0 0 10px rgba(249,115,22,0.7);"></div>
+          <div class="stage-spacer md:w-1/2 md:pl-14 md:order-3"></div>
+        </div>
+
+        <!-- Stage 6: Gen AI, LLMs & RAG — RIGHT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-spacer md:w-1/2 md:pr-14 md:order-1"></div>
+          <div class="tl-dot md:order-2" style="border-color:#06b6d4;box-shadow:0 0 10px rgba(6,182,212,0.7);"></div>
+          <div class="stage-card-wrap md:w-1/2 md:pl-14 md:order-3">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(6,182,212,0.45),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.18);">
+                <span style="font-size:1.5rem;">⚡</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Gen AI, LLMs & RAG</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Work with the most powerful AI systems on the planet.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#06b6d4;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Transformer architecture &amp; Prompt Engineering</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#06b6d4;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> RAG pipelines &amp; vector database retrieval</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#06b6d4;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Hands-on AI generation project</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:#06b6d4;font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#06b6d4;display:inline-block;"></span>
+                Stage 6 &middot; 9 hours
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 7: Capstone Project & Defense — LEFT -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-card-wrap md:w-1/2 md:pr-14 md:order-1">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(245,158,11,0.5),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);">
+                <span style="font-size:1.5rem;">🏆</span>
+              </div>
+              <h3 class="font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Capstone Project & Defense</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Your graduation moment &mdash; build big, deploy live, defend confidently.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#f59e0b;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Build a production-ready AI system from scratch</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#f59e0b;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Deploy publicly on the web</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:#f59e0b;font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Live project defense &amp; peer review</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:#f59e0b;font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
+                Stage 7 &middot; 6 hours &middot; Final Defense
+              </div>
+            </div>
+          </div>
+          <div class="tl-dot md:order-2" style="border-color:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,0.7);"></div>
+          <div class="stage-spacer md:w-1/2 md:pl-14 md:order-3"></div>
+        </div>
+
+        <!-- Stage 8: Portfolio & Resume Building — RIGHT (finale) -->
+        <div class="stage flex flex-col md:flex-row md:items-center gap-6">
+          <div class="stage-spacer md:w-1/2 md:pr-14 md:order-1"></div>
+          <div class="tl-dot md:order-2" style="width:20px;height:20px;border-color:var(--cyan);box-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,240,255,0.3);position:relative;">
+            <span class="pulse-ring"></span>
+          </div>
+          <div class="stage-card-wrap md:w-1/2 md:pl-14 md:order-3">
+            <div class="glass rounded-2xl p-6 relative overflow-hidden" style="border-color:rgba(0,240,255,0.2);box-shadow:0 0 40px rgba(0,240,255,0.07);">
+              <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.9),rgba(155,93,229,0.5),transparent);"></div>
+              <div class="icon-box mb-4" style="background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.25);">
+                <span style="font-size:1.5rem;">📁</span>
+              </div>
+              <h3 class="grad font-semibold text-lg mb-1" style="font-family:'Space Grotesk',sans-serif;">Portfolio & Resume Building</h3>
+              <p style="color:#6b7280;font-size:0.8rem;margin-bottom:0.85rem;">Turn your projects into opportunities that recruiters can't ignore.</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem;">
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:var(--cyan);font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Polish your GitHub &amp; write strong project READMEs</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:var(--cyan);font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Craft an AI-focused resume &amp; LinkedIn profile</li>
+                <li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9ca3af;"><span style="color:var(--cyan);font-size:0.7rem;margin-top:0.2rem;flex-shrink:0;">&#9654;</span> Build a personal portfolio site that gets you hired</li>
+              </ul>
+              <div class="flex items-center gap-2 mt-4" style="color:var(--cyan);font-size:0.72rem;font-weight:600;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block;flex-shrink:0;"></span>
+                Stage 8 &middot; 3 hours &middot; Career Ready
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     ABOUT
+══════════════════════════════════════ -->
+<section id="about" class="py-28 px-6 relative overflow-hidden">
+  <div class="blob w-96 h-96" style="background:rgba(155,93,229,0.06);top:10%;left:-15%;"></div>
+  <div class="blob w-96 h-96" style="background:rgba(0,240,255,0.05);bottom:10%;right:-15%;"></div>
+
+  <div class="max-w-6xl mx-auto" id="courses">
+    <!-- Heading -->
+    <div class="text-center mb-16 reveal">
+      <p style="color:var(--violet);font-size:0.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;">About Us</p>
+      <h2 class="font-bold text-4xl bracket" style="font-family:'Space Grotesk',sans-serif;">We don't just teach AI. We build it.</h2>
+      <p style="color:#6b7280;margin-top:1rem;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.7;">Our philosophy is simple: the best way to learn AI is to ship AI.</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+
+      <!-- Card 1 -->
+      <div class="glass rounded-2xl p-8 reveal relative overflow-hidden group">
+        <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.5),transparent);"></div>
+        <div class="icon-box mb-5" style="background:rgba(0,240,255,0.08);border:1px solid rgba(0,240,255,0.15);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-lg mb-3" style="font-family:'Space Grotesk',sans-serif;">Real Projects. Real Experience.</h3>
+        <p style="color:#6b7280;font-size:0.875rem;line-height:1.65;">Every course ends with a production-ready project you actually built — not a tutorial you followed.</p>
+        <div class="flex items-center gap-2 mt-5 opacity-50 group-hover:opacity-100 transition-opacity" style="color:var(--cyan);font-size:0.72rem;font-weight:600;">
+          <span style="display:block;width:16px;height:1px;background:var(--cyan);"></span>
+          Ship. Don't just learn.
+        </div>
+      </div>
+
+      <!-- Card 2 (center glow) -->
+      <div class="glass rounded-2xl p-8 reveal relative overflow-hidden group"
+           style="border-color:rgba(0,240,255,0.18);box-shadow:0 0 60px rgba(0,240,255,0.08),0 0 120px rgba(0,240,255,0.03);">
+        <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,240,255,0.06),transparent);border-radius:inherit;"></div>
+        <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.9),transparent);"></div>
+        <div class="icon-box mb-5 relative z-10" style="background:rgba(0,240,255,0.12);border:1px solid rgba(0,240,255,0.25);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+            <circle cx="8" cy="19" r="2"/><circle cx="16" cy="19" r="2"/>
+            <line x1="12" y1="7" x2="5" y2="10"/><line x1="12" y1="7" x2="19" y2="10"/>
+            <line x1="5" y1="14" x2="8" y2="17"/><line x1="19" y1="14" x2="16" y2="17"/>
+            <line x1="8" y1="19" x2="16" y2="19"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-lg mb-3 relative z-10" style="font-family:'Space Grotesk',sans-serif;">Hands-On From Day One.</h3>
+        <p class="relative z-10" style="color:#6b7280;font-size:0.875rem;line-height:1.65;">No death by slides. You write code, train models, and solve real problems starting from lesson one.</p>
+        <div class="flex items-center gap-2 mt-5 opacity-50 group-hover:opacity-100 transition-opacity relative z-10" style="color:var(--cyan);font-size:0.72rem;font-weight:600;">
+          <span style="display:block;width:16px;height:1px;background:var(--cyan);"></span>
+          Code from lesson 1.
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="glass rounded-2xl p-8 reveal relative overflow-hidden group">
+        <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(155,93,229,0.5),transparent);"></div>
+        <div class="icon-box mb-5" style="background:rgba(155,93,229,0.08);border:1px solid rgba(155,93,229,0.18);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9b5de5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-lg mb-3" style="font-family:'Space Grotesk',sans-serif;">Portfolio-First Learning.</h3>
+        <p style="color:#6b7280;font-size:0.875rem;line-height:1.65;">Graduate with a GitHub full of AI projects that speak louder than any certificate.</p>
+        <div class="flex items-center gap-2 mt-5 opacity-50 group-hover:opacity-100 transition-opacity" style="color:#9b5de5;font-size:0.72rem;font-weight:600;">
+          <span style="display:block;width:16px;height:1px;background:#9b5de5;"></span>
+          Build your edge.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Manifesto -->
+    <div class="text-center reveal">
+      <div class="flex items-center justify-center gap-5 mb-8">
+        <div style="height:1px;width:80px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.35));"></div>
+        <div style="width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:0.5;"></div>
+        <div style="height:1px;width:80px;background:linear-gradient(90deg,rgba(155,93,229,0.35),transparent);"></div>
+      </div>
+      <p class="grad font-black" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.4rem,3.5vw,2.8rem);line-height:1.18;letter-spacing:-.02em;">
+        "While others study AI,<br />our students are already building it."
+      </p>
+      <div class="flex items-center justify-center gap-5 mt-8">
+        <div style="height:1px;width:80px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.35));"></div>
+        <div style="width:5px;height:5px;border-radius:50%;background:#9b5de5;opacity:0.5;"></div>
+        <div style="height:1px;width:80px;background:linear-gradient(90deg,rgba(155,93,229,0.35),transparent);"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════ -->
+<section id="testimonials" class="py-24 px-6 relative overflow-hidden">
+  <div class="blob w-96 h-96" style="background:rgba(0,240,255,0.04);top:0;right:-10%;"></div>
+
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p style="color:var(--cyan);font-size:0.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;">Student Voices</p>
+      <h2 class="font-bold text-4xl bracket" style="font-family:'Space Grotesk',sans-serif;">Early Access, Real Impact</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- T1 -->
+      <div class="glass rounded-2xl p-7 reveal relative overflow-hidden">
+        <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.3),transparent);"></div>
+        <div class="stars mb-4">★★★★★</div>
+        <p style="color:#d1d5db;font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem;font-style:italic;">
+          "I went from knowing zero Python to deploying my own image classifier in 6 weeks. The structure here is insane — every lesson builds on the last."
+        </p>
+        <div class="flex items-center gap-3">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00f0ff,#9b5de5);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;color:#080810;flex-shrink:0;">SA</div>
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">Sara A.</div>
+            <div style="color:#6b7280;font-size:0.75rem;">CS Student · Cairo University</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T2 -->
+      <div class="glass rounded-2xl p-7 reveal relative overflow-hidden"
+           style="border-color:rgba(155,93,229,0.15);box-shadow:0 0 40px rgba(155,93,229,0.06);">
+        <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(155,93,229,0.5),transparent);"></div>
+        <div class="stars mb-4">★★★★★</div>
+        <p style="color:#d1d5db;font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem;font-style:italic;">
+          "The roadmap removed all the decision fatigue. I knew exactly what to learn next. Shipped 3 projects and landed a summer internship at an AI startup."
+        </p>
+        <div class="flex items-center gap-3">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#9b5de5,#e040fb);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;color:#fff;flex-shrink:0;">KM</div>
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">Khalid M.</div>
+            <div style="color:#6b7280;font-size:0.75rem;">Engineering Student · AUC</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T3 -->
+      <div class="glass rounded-2xl p-7 reveal relative overflow-hidden">
+        <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.3),transparent);"></div>
+        <div class="stars mb-4">★★★★★</div>
+        <p style="color:#d1d5db;font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem;font-style:italic;">
+          "Most AI courses throw theory at you for weeks. LevelUp made me write real PyTorch code on day one. My GitHub went from empty to impressive in a month."
+        </p>
+        <div class="flex items-center gap-3">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00f0ff,#0080ff);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;color:#080810;flex-shrink:0;">LT</div>
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">Lena T.</div>
+            <div style="color:#6b7280;font-size:0.75rem;">Data Science Student · GUC</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     REGISTRATION & PAYMENT CHECKOUT
+══════════════════════════════════════ -->
+<section id="waitlist" class="py-28 px-6 relative overflow-hidden">
+  <!-- Background radial glow -->
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(0,240,255,0.06),transparent);"></div>
+  <!-- Floating blobs -->
+  <div class="blob w-96 h-96" style="background:rgba(0,240,255,0.06);top:-5%;left:-8%;"></div>
+  <div class="blob w-80 h-80" style="background:rgba(155,93,229,0.07);bottom:0%;right:-6%;"></div>
+
+  <div class="max-w-3xl mx-auto relative z-10 reveal">
+
+    <!-- ── Section label ── -->
+    <div class="text-center mb-4">
+      <p style="color:var(--cyan);font-size:0.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;">Cohort 1 · Limited Seats</p>
+    </div>
+
+    <!-- ── Offer & Pricing Banner ── -->
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-5"
+           style="background:rgba(155,93,229,0.12);border:1px solid rgba(155,93,229,0.3);font-size:0.75rem;font-weight:600;color:#d8b4fe;letter-spacing:.06em;">
+        🔥 FIRST COHORT ONLY — FOUNDING MEMBER OFFER
+      </div>
+      <h2 class="font-black mb-4" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;letter-spacing:-.02em;">
+        Secure Your Seat.<br />
+        <span class="shimmer-text">Master AI. Level Up.</span>
+      </h2>
+
+      <!-- Price display -->
+      <div class="flex items-center justify-center gap-5 mt-6 mb-3 flex-wrap">
+        <!-- Crossed-out original price -->
+        <div style="font-size:1.5rem;font-weight:700;color:#6b7280;text-decoration:line-through;text-decoration-color:rgba(239,68,68,0.7);">5,999 EGP</div>
+        <!-- Arrow -->
+        <div style="color:#4b5563;font-size:1.2rem;">→</div>
+        <!-- New price with glow -->
+        <div class="relative">
+          <span class="font-black" style="font-family:'Space Grotesk',sans-serif;font-size:3rem;background:linear-gradient(135deg,#00f0ff,#9b5de5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 18px rgba(0,240,255,0.55)) drop-shadow(0 0 36px rgba(155,93,229,0.3));">499 EGP</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-2 flex-wrap" style="font-size:0.78rem;color:#9ca3af;">
+        <span style="display:inline-flex;align-items:center;gap:0.3rem;color:#fbbf24;font-weight:600;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#fbbf24;display:inline-block;box-shadow:0 0 6px #fbbf24;"></span>
+          Limited Seats for Cohort 1
+        </span>
+        <span style="color:#374151;">·</span>
+        <span>Price goes back to 5,999 EGP for Cohort 2</span>
+      </div>
+    </div>
+
+    <!-- ── Main card ── -->
+    <div class="glass rounded-3xl relative overflow-hidden"
+         style="border-color:rgba(0,240,255,0.18);box-shadow:0 0 100px rgba(0,240,255,0.08),0 0 200px rgba(155,93,229,0.05);">
+      <div class="top-line" style="background:linear-gradient(90deg,transparent,rgba(0,240,255,0.7),rgba(155,93,229,0.5),transparent);"></div>
+      <!-- Corner accents -->
+      <span style="position:absolute;top:16px;left:16px;font-size:1.1rem;color:var(--cyan);opacity:0.35;font-family:monospace;">[</span>
+      <span style="position:absolute;top:16px;right:16px;font-size:1.1rem;color:var(--violet);opacity:0.35;font-family:monospace;">]</span>
+      <span style="position:absolute;bottom:16px;left:16px;font-size:1.1rem;color:var(--violet);opacity:0.35;font-family:monospace;">]</span>
+      <span style="position:absolute;bottom:16px;right:16px;font-size:1.1rem;color:var(--cyan);opacity:0.35;font-family:monospace;">[</span>
+
+      <div style="padding:2rem 2rem 2.5rem;">
+
+        <!-- ── Payment Instructions ── -->
+        <div class="rounded-2xl mb-8 relative overflow-hidden"
+             style="background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.15);padding:1.5rem 1.75rem;">
+          <div style="position:absolute;inset-x:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.5),transparent);"></div>
+          <div class="flex items-center gap-2 mb-4">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#00f0ff,#9b5de5);color:#080810;font-weight:800;font-size:0.75rem;flex-shrink:0;">1</span>
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#fff;">Transfer the amount to secure your seat</h3>
+          </div>
+          <p style="color:#9ca3af;font-size:0.8rem;margin-bottom:1.25rem;line-height:1.6;">Send exactly <strong style="color:#00f0ff;">499 EGP</strong> using any of the methods below, then upload a screenshot of your transfer receipt in the form.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- InstaPay -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:0.875rem;padding:0.9rem 1rem;display:flex;align-items:center;gap:0.85rem;">
+              <div style="width:38px;height:38px;border-radius:10px;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;">⚡</div>
+              <div>
+                <div style="color:#6b7280;font-size:0.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;">InstaPay</div>
+                <div style="color:#fff;font-weight:700;font-size:0.95rem;font-family:'Space Grotesk',sans-serif;letter-spacing:.03em;">01011441742</div>
+              </div>
+            </div>
+            <!-- Vodafone Cash -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:0.875rem;padding:0.9rem 1rem;display:flex;align-items:center;gap:0.85rem;">
+              <div style="width:38px;height:38px;border-radius:10px;background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.25);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;">📱</div>
+              <div>
+                <div style="color:#6b7280;font-size:0.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;">Vodafone Cash</div>
+                <div style="color:#fff;font-weight:700;font-size:0.95rem;font-family:'Space Grotesk',sans-serif;letter-spacing:.03em;">01069216994</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Step 2 label ── -->
+        <div class="flex items-center gap-2 mb-5">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#00f0ff,#9b5de5);color:#080810;font-weight:800;font-size:0.75rem;flex-shrink:0;">2</span>
+          <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#fff;">Complete your registration</h3>
+        </div>
+
+        <!-- ── Registration Form ── -->
+        <form id="waitlist-form" enctype="multipart/form-data" novalidate>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+            <!-- Full Name -->
+            <div class="flex flex-col gap-1.5">
+              <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">Full Name</label>
+              <input id="field-name" type="text" placeholder="Ahmed Mohamed" required
+                     class="email-input px-4 py-3 rounded-xl w-full" />
+            </div>
+
+            <!-- Email -->
+            <div class="flex flex-col gap-1.5">
+              <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">Email Address</label>
+              <input id="email-input" type="email" placeholder="your@email.com" required
+                     class="email-input px-4 py-3 rounded-xl w-full" />
+            </div>
+
+            <!-- Phone -->
+            <div class="flex flex-col gap-1.5">
+              <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">Phone / WhatsApp</label>
+              <input id="field-phone" type="tel" placeholder="01XXXXXXXXX" required
+                     class="email-input px-4 py-3 rounded-xl w-full" />
+            </div>
+
+            <!-- University / Study Year -->
+            <div class="flex flex-col gap-1.5">
+              <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">University / Study Year</label>
+              <input id="field-university" type="text" placeholder="Cairo University · Year 2" required
+                     class="email-input px-4 py-3 rounded-xl w-full" />
+            </div>
+
+            <!-- National ID -->
+            <div class="flex flex-col gap-1.5">
+              <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">National ID Number</label>
+              <input id="field-national-id" type="number" placeholder="30XXXXXXXXXXXXX" required
+                     class="email-input px-4 py-3 rounded-xl w-full"
+                     style="-moz-appearance:textfield;" />
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="flex flex-col gap-1.5">
+              <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">Date of Birth</label>
+              <input id="field-dob" type="date" required
+                     class="email-input px-4 py-3 rounded-xl w-full"
+                     style="color-scheme:dark;" />
+            </div>
+
+          </div>
+
+          <!-- Payment Receipt Upload — full width -->
+          <div class="flex flex-col gap-1.5 mb-6">
+            <label style="font-size:0.75rem;font-weight:600;color:#9ca3af;letter-spacing:.04em;text-transform:uppercase;">Payment Receipt Screenshot</label>
+            <label id="file-label" for="field-receipt"
+                   style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1.5px dashed rgba(0,240,255,0.25);border-radius:0.875rem;padding:1.1rem 1.25rem;cursor:pointer;transition:border-color 0.25s,box-shadow 0.25s;">
+              <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,240,255,0.08);border:1px solid rgba(0,240,255,0.15);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">📎</div>
+              <div>
+                <div id="file-label-text" style="color:#d1d5db;font-size:0.875rem;font-weight:500;">Click to upload transfer screenshot</div>
+                <div style="color:#4b5563;font-size:0.72rem;margin-top:2px;">PNG, JPG, JPEG — max 5 MB</div>
+              </div>
+            </label>
+            <input id="field-receipt" type="file" accept="image/*" required
+                   style="display:none;" />
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" id="notify-btn"
+                  class="btn-solid w-full py-4 rounded-xl font-bold"
+                  style="font-size:1rem;letter-spacing:.02em;">
+            🚀 Confirm Registration &amp; Reserve My Seat
+          </button>
+
+        </form>
+
+        <!-- Status message -->
+        <div id="form-status" class="mt-5 text-sm hidden" style="text-align:center;"></div>
+
+        <p style="color:#374151;font-size:0.7rem;margin-top:1.5rem;text-align:center;line-height:1.6;">
+          🔒 Your data is safe with us. Registration is confirmed only after manual verification of your payment receipt.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer style="border-top:1px solid rgba(255,255,255,0.05);padding:1.75rem 1.5rem;">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
+
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-2.5 select-none">
+      <img src="levelup_ai_logo_clean.png" alt="LevelUp AI logo" class="logo-img-foot" draggable="false" />
+      <span class="grad font-bold" style="font-family:'Space Grotesk',sans-serif;">LevelUp AI</span>
+    </a>
+
+    <!-- Copyright -->
+    <p style="color:#374151;font-size:0.75rem;">© 2026 LevelUp AI. All rights reserved.</p>
+
+    <!-- Socials -->
+    <div class="flex items-center gap-5">
+      <a href="#" class="soc" aria-label="X / Twitter">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      </a>
+      <a href="#" class="soc" aria-label="LinkedIn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="#" class="soc" aria-label="GitHub">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      <a href="#" class="soc" aria-label="Discord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.114 18.1.133 18.114a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      </a>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── Custom cursor (desktop only) ──────────
+const isTouch = window.matchMedia('(pointer: coarse)').matches;
+if (!isTouch) {
+  const dot  = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    rx += (mx - rx) * 0.14;
+    ry += (my - ry) * 0.14;
+    dot.style.left  = mx + 'px';
+    dot.style.top   = my + 'px';
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
+}
+
+// ── Scroll progress ─────────────────────
+const scrollBar = document.getElementById('scroll-bar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  scrollBar.style.width = pct + '%';
+}, { passive: true });
+
+// ── Navbar scroll effect ────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ── Mobile menu ─────────────────────────
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+let menuOpen = false;
+hamburger.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  mobileMenu.classList.toggle('open', menuOpen);
+  const [b1,,b3] = hamburger.querySelectorAll('span');
+  if (menuOpen) {
+    b1.style.transform = 'rotate(45deg) translate(4px,4px)';
+    hamburger.querySelectorAll('span')[1].style.opacity = '0';
+    b3.style.transform = 'rotate(-45deg) translate(4px,-4px)';
+  } else {
+    b1.style.transform = b3.style.transform = '';
+    hamburger.querySelectorAll('span')[1].style.opacity = '';
+  }
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  menuOpen = false; mobileMenu.classList.remove('open');
+  const bars = hamburger.querySelectorAll('span');
+  bars[0].style.transform = bars[2].style.transform = '';
+  bars[1].style.opacity = '';
+}));
+
+// ── Particles ───────────────────────────
+const canvas = document.getElementById('particles-canvas');
+const ctx    = canvas.getContext('2d');
+let W, H, particles = [];
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize, { passive: true });
+
+class P {
+  constructor() { this.init(); }
+  init() {
+    this.x  = Math.random() * W;
+    this.y  = Math.random() * H;
+    this.r  = Math.random() * 1.6 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.25;
+    this.vy = (Math.random() - 0.5) * 0.25;
+    this.a  = Math.random() * 0.45 + 0.08;
+    this.c  = Math.random() > 0.55 ? '0,240,255' : '155,93,229';
+  }
+  step() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.init();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.c},${this.a})`;
+    ctx.fill();
+  }
+}
+for (let i = 0; i < 80; i++) particles.push(new P());
+
+(function frame() {
+  ctx.clearRect(0, 0, W, H);
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < 90) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,240,255,${0.04 * (1 - d/90)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  particles.forEach(p => { p.step(); p.draw(); });
+  requestAnimationFrame(frame);
+})();
+
+// ── Smooth scroll ───────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    }
+  });
+});
+
+// ── Intersection Observer ───────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('up'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Stage cards stagger
+const stageCards = document.querySelectorAll('.stage');
+const stageIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = Array.from(stageCards).indexOf(e.target);
+      setTimeout(() => e.target.classList.add('up'), idx * 110);
+      stageIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+stageCards.forEach(c => stageIO.observe(c));
+
+// Timeline line grow
+const tlLine = document.getElementById('tl-line');
+const tlWrap = document.getElementById('tl-wrap');
+if (tlWrap) {
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) tlLine.style.height = '100%';
+  }, { threshold: 0.04 }).observe(tlWrap);
+}
+
+// ── Animated counters ───────────────────
+const counters = document.querySelectorAll('[data-target]');
+const counterIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el     = e.target;
+    const target = +el.dataset.target;
+    const suffix = el.dataset.suffix || '';
+    const dur    = 1600;
+    const step   = 16;
+    const inc    = target / (dur / step);
+    let cur      = 0;
+    const timer = setInterval(() => {
+      cur += inc;
+      if (cur >= target) { cur = target; clearInterval(timer); }
+      const display = target >= 1000 ? (cur/1000).toFixed(1)+'k' : Math.floor(cur).toString();
+      el.textContent = display + suffix;
+    }, step);
+    counterIO.unobserve(el);
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => counterIO.observe(c));
+
+// ── File upload label feedback ───────────
+const fileInput = document.getElementById('field-receipt');
+const fileLabel = document.getElementById('file-label');
+const fileLabelText = document.getElementById('file-label-text');
+
+if (fileInput) {
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files && fileInput.files[0]) {
+      fileLabelText.textContent = '✓ ' + fileInput.files[0].name;
+      fileLabelText.style.color = '#00f0ff';
+      fileLabel.style.borderColor = 'rgba(0,240,255,0.55)';
+      fileLabel.style.boxShadow = '0 0 16px rgba(0,240,255,0.12)';
+    } else {
+      fileLabelText.textContent = 'Click to upload transfer screenshot';
+      fileLabelText.style.color = '#d1d5db';
+      fileLabel.style.borderColor = 'rgba(0,240,255,0.25)';
+      fileLabel.style.boxShadow = 'none';
+    }
+  });
+}
+
+// ── Waitlist / Registration form → Express backend ──────────
+document.getElementById('waitlist-form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const btn    = document.getElementById('notify-btn');
+  const status = document.getElementById('form-status');
+
+  // ── Gather fields ──────────────────────────────────────────
+  const email = document.getElementById('email-input')
+                         ? document.getElementById('email-input').value.trim()
+                         : '';
+
+  // Extended registration fields (may not exist on simplified form)
+  const name       = document.getElementById('field-name')        ? document.getElementById('field-name').value.trim()        : '';
+  const phone      = document.getElementById('field-phone')       ? document.getElementById('field-phone').value.trim()       : '';
+  const university = document.getElementById('field-university')  ? document.getElementById('field-university').value.trim()  : '';
+  const nationalId = document.getElementById('field-national-id') ? document.getElementById('field-national-id').value.trim() : '';
+  const dob        = document.getElementById('field-dob')         ? document.getElementById('field-dob').value.trim()         : '';
+  const receiptInput = document.getElementById('field-receipt');
+  const receiptFile  = receiptInput && receiptInput.files[0] ? receiptInput.files[0] : null;
+
+  // ── Validation ─────────────────────────────────────────────
+  const showError = msg => {
+    status.innerHTML = '⚠️ ' + msg;
+    status.className = 'mt-5 text-sm';
+    status.style.color = '#fbbf24';
+    status.classList.remove('hidden');
+  };
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Please enter a valid email address.');
+  if (name        !== undefined && name        === '' && document.getElementById('field-name'))        return showError('Please enter your full name.');
+  if (phone       !== undefined && phone       === '' && document.getElementById('field-phone'))       return showError('Please enter your phone / WhatsApp number.');
+  if (university  !== undefined && university  === '' && document.getElementById('field-university'))  return showError('Please enter your university and study year.');
+  if (nationalId  !== undefined && nationalId  === '' && document.getElementById('field-national-id')) return showError('Please enter your National ID number.');
+  if (dob         !== undefined && dob         === '' && document.getElementById('field-dob'))         return showError('Please select your date of birth.');
+
+  // ── Loading state ──────────────────────────────────────────
+  btn.innerHTML     = '⏳ Processing...';
+  btn.disabled      = true;
+  btn.style.opacity = '0.75';
+  status.classList.add('hidden');
+
+  try {
+    let res;
+
+    if (receiptFile) {
+      // Multipart form (has file upload) → /register
+      const fd = new FormData();
+      fd.append('email',       email);
+      fd.append('name',        name);
+      fd.append('phone',       phone);
+      fd.append('university',  university);
+      fd.append('national_id', nationalId);
+      fd.append('dob',         dob);
+      fd.append('receipt',     receiptFile, receiptFile.name);
+
+      res = await fetch('/register', { method: 'POST', body: fd });
+    } else {
+      // Simple email-only waitlist → /subscribe
+      res = await fetch('/subscribe', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, name, phone, university, nationalId, dob }),
+      });
+    }
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      btn.innerHTML     = '✓ Submitted!';
+      btn.style.opacity = '1';
+      status.innerHTML  = '🎉 <strong style="color:#00f0ff;">You\'re in!</strong> We\'ll verify your details and confirm your seat. Check your inbox for a confirmation.';
+      status.className  = 'mt-5 text-sm';
+      status.style.color = '#d1d5db';
+      status.classList.remove('hidden');
+
+      document.getElementById('waitlist-form').reset();
+      if (fileLabelText) { fileLabelText.textContent = 'Click to upload transfer screenshot'; fileLabelText.style.color = '#d1d5db'; }
+      if (fileLabel)     { fileLabel.style.borderColor = 'rgba(0,240,255,0.25)'; fileLabel.style.boxShadow = 'none'; }
+    } else {
+      throw new Error(data.message || 'server error');
+    }
+  } catch (err) {
+    btn.innerHTML     = '🚀 Confirm Registration &amp; Reserve My Seat';
+    btn.disabled      = false;
+    btn.style.opacity = '1';
+    showError('Something went wrong. Please try again or contact us directly.');
+  }
+});
+
+</script>
+</body>
+</html>
