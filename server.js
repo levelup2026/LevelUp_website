@@ -260,6 +260,44 @@ app.post('/register', upload.single('receipt'), async (req, res) => {
     return res.status(500).json({ success: false, message: 'Failed to send email. Please try again.' });
   }
 });
+
+// ── POST /comment (Handles comment form submission) ──────────────
+app.post('/comment', async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!email || !message) {
+    return res.status(400).json({ success: false, message: 'Missing email or message.' });
+  }
+
+  const adminMail = {
+    from: `"LevelUp AI Contact" <${process.env.GMAIL_USER}>`,
+    to:   process.env.GMAIL_USER,
+    subject: `💬 New Message/Comment from ${name || email}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#080810;color:#fff;padding:20px;border:1px solid #333;border-radius:10px;">
+        <h2 style="color:#00f0ff;">New Message</h2>
+        <table style="width:100%;border-collapse:collapse;margin-top:20px;text-align:left;">
+          <tr><th style="padding:10px;border-bottom:1px solid #333;color:#9b5de5;">Name</th><td style="padding:10px;border-bottom:1px solid #333;">${name || '-'}</td></tr>
+          <tr><th style="padding:10px;border-bottom:1px solid #333;color:#9b5de5;">Email</th><td style="padding:10px;border-bottom:1px solid #333;">${email || '-'}</td></tr>
+        </table>
+        <h3 style="color:#9b5de5;margin-top:20px;">Message:</h3>
+        <div style="background:#111;padding:15px;border-radius:8px;border:1px solid #333;white-space:pre-wrap;">${message}</div>
+        <p style="margin-top:20px;color:#888;">Submitted: ${new Date().toISOString()}</p>
+      </div>
+    `,
+  };
+
+  try {
+    const transporter = createTransporter();
+    await transporter.sendMail(adminMail);
+    console.log(`[${new Date().toISOString()}] ✅ Comment received from: ${email}`);
+    return res.json({ success: true });
+  } catch (err) {
+    console.error(`[${new Date().toISOString()}] ❌ Email error (Comment):`, err.message);
+    return res.status(500).json({ success: false, message: 'Failed to send message. Please try again.' });
+  }
+});
+
 // ── Fallback: serve index.html for any unmatched route ────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
