@@ -1511,10 +1511,10 @@ document.getElementById('waitlist-form').addEventListener('submit', async e => {
       fd.append('dob',         dob);
       fd.append('receipt',     receiptFile, receiptFile.name);
 
-      res = await fetch('/register', { method: 'POST', body: fd });
+      res = await fetch('/.netlify/functions/register', { method: 'POST', body: fd });
     } else {
       // Simple email-only waitlist → /subscribe
-      res = await fetch('/subscribe', {
+      res = await fetch('/.netlify/functions/subscribe', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ email, name, phone, university, nationalId, dob }),
@@ -1563,7 +1563,7 @@ if (commentForm) {
     status.classList.add('hidden');
 
     try {
-      const res = await fetch('/comment', {
+      const res = await fetch('/.netlify/functions/comment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, message }),

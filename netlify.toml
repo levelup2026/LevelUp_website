@@ -1,13 +1,9 @@
 [build]
-  publish = "."
   functions = "netlify/functions"
+  publish   = "."
 
+# Serve the SPA for any unmatched route (must be last)
 [[redirects]]
-  from = "/subscribe"
-  to = "/.netlify/functions/api/subscribe"
-  status = 200
-
-[[redirects]]
-  from = "/register"
-  to = "/.netlify/functions/api/register"
+  from   = "/*"
+  to     = "/index.html"
   status = 200
